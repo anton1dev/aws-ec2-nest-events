@@ -10,23 +10,41 @@ import {
   ParseIntPipe,
   ValidationPipe,
   UsePipes,
+  Query,
 } from '@nestjs/common';
-import { CreateEventDto } from './create-event.dto';
-import { UpdateEventDto } from './update-event.dto';
+import { CreateEventDto } from './input/create-event.dto';
+import { UpdateEventDto } from './input/update-event.dto';
 import { Event } from './event.entity';
 import { Like, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Attendee } from './attendee.entity';
+import { EventsService } from './events.service';
+import { ListEvents } from './input/list.events';
 
 @Controller('/events')
 export class EventsController {
   constructor(
     @InjectRepository(Event)
     private readonly repository: Repository<Event>,
+
+    @InjectRepository(Attendee)
+    private readonly attendeeRepository: Repository<Attendee>,
+    private readonly eventsService: EventsService,
   ) {}
 
   @Get()
-  async findAll() {
-    return this.repository.find();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(@Query() filter: ListEvents) {
+    const events =
+      await this.eventsService.getEventsWithAttendeeCountFilteredPaginated(
+        filter,
+        {
+          total: true,
+          currentPage: filter.page,
+          limit: 10,
+        },
+      );
+    return events;
   }
 
   @Get('/practice')
@@ -51,7 +69,7 @@ export class EventsController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id) {
-    return await this.repository.findOne(id);
+    return await this.eventsService.getEvent(id);
   }
 
   @UsePipes()
