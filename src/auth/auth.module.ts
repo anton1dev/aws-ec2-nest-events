@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersController } from './users.controller';
+import { UserService } from './user.service';
+import { UserDoesNotExistConstraint } from './validation/user-does-not-exist.constraint';
 
 @Module({
   imports: [
@@ -20,7 +22,13 @@ import { UsersController } from './users.controller';
       }),
     }),
   ],
-  providers: [LocalStrategy, JwtStrategy, AuthService],
+  providers: [
+    LocalStrategy,
+    JwtStrategy,
+    AuthService,
+    UserService,
+    UserDoesNotExistConstraint,
+  ],
   controllers: [AuthController, UsersController],
 })
 export class AuthModule {}
