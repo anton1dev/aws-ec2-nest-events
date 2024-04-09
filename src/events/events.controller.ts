@@ -16,32 +16,25 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { CreateEventDto } from './input/create-event.dto';
 import { UpdateEventDto } from './input/update-event.dto';
-import { Event } from './event.entity';
-import { Like, MoreThan, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Attendee } from './attendee.entity';
 import { EventsService } from './events.service';
 import { ListEvents } from './input/list.events';
-import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
-import { CurrentUser } from 'src/auth/current-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { AuthGuardJwt } from './../auth/auth-guard.jwt';
+import { CurrentUser } from './../auth/current-user.decorator';
+import { User } from './../auth/user.entity';
 
 @Controller('/events')
 export class EventsController {
-  constructor(
-    @InjectRepository(Event)
-    private readonly repository: Repository<Event>,
+  private readonly logger = new Logger(EventsController.name);
 
-    @InjectRepository(Attendee)
-    private readonly attendeeRepository: Repository<Attendee>,
-    private readonly eventsService: EventsService,
-  ) {}
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(ClassSerializerInterceptor)
   async findAll(@Query() filter: ListEvents) {
     const events =
       await this.eventsService.getEventsWithAttendeeCountFilteredPaginated(
@@ -55,29 +48,10 @@ export class EventsController {
     return events;
   }
 
-  @Get('/practice')
-  async practice() {
-    return await this.repository.find({
-      select: ['id', 'when'],
-      where: [
-        {
-          id: MoreThan(3),
-          when: MoreThan(new Date('2021-02-12T13:00:00')),
-        },
-        {
-          description: Like('%meet%'),
-        },
-      ],
-      take: 2,
-      order: {
-        id: 'ASC',
-      },
-    });
-  }
-
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id) {
-    const event = await this.eventsService.getEvent(id);
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const event = await this.eventsService.getEventWithAttendeeCount(id);
 
     if (!event) {
       throw new NotFoundException();
@@ -105,7 +79,7 @@ export class EventsController {
     @Body(new ValidationPipe({ groups: ['update'] })) input: UpdateEventDto,
     @CurrentUser() user: User,
   ) {
-    const eventToPatch = await this.eventsService.getEvent(id);
+    const eventToPatch = await this.eventsService.findOne(id);
 
     if (!eventToPatch) {
       throw new NotFoundException();
@@ -121,8 +95,8 @@ export class EventsController {
   @Delete(':id')
   @UseGuards(AuthGuardJwt)
   @HttpCode(204)
-  async remove(@Param('id') id, @CurrentUser() user: User) {
-    const eventToDelete = await this.eventsService.getEvent(id);
+  async remove(@Param('id', ParseIntPipe) id, @CurrentUser() user: User) {
+    const eventToDelete = await this.eventsService.findOne(id);
 
     if (!eventToDelete) {
       throw new NotFoundException();
