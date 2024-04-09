@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersController } from './users.controller';
 import { UserService } from './user.service';
-import { UserDoesNotExistConstraint } from './validation/user-does-not-exist.constraint';
+import { UserDoesNotExistConstraint } from '../validation/user-does-not-exist.constraint';
 
 @Module({
   imports: [

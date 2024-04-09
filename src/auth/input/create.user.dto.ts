@@ -1,7 +1,7 @@
-import { IsRepeated } from 'src/auth/validation/is-repeated.constraint';
+import { IsRepeated } from 'src/validation/is-repeated.constraint';
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, Length } from 'class-validator';
-import { UserDoesNotExist } from '../validation/user-does-not-exist.constraint';
+import { UserDoesNotExist } from '../../validation/user-does-not-exist.constraint';
 
 @InputType('UserAddInput')
 export class CreateUserDto {

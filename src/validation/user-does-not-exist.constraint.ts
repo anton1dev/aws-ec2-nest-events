@@ -6,7 +6,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 import { Repository } from 'typeorm';
-import { User } from '../user.entity';
+import { User } from '../auth/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
