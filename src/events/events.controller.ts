@@ -11,6 +11,11 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  NotFoundException,
+  UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CreateEventDto } from './input/create-event.dto';
 import { UpdateEventDto } from './input/update-event.dto';
@@ -20,6 +25,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from './attendee.entity';
 import { EventsService } from './events.service';
 import { ListEvents } from './input/list.events';
+import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
+import { CurrentUser } from 'src/auth/current-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('/events')
 export class EventsController {
@@ -41,7 +49,7 @@ export class EventsController {
         {
           total: true,
           currentPage: filter.page,
-          limit: 10,
+          limit: 3,
         },
       );
     return events;
@@ -69,39 +77,61 @@ export class EventsController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id) {
-    return await this.eventsService.getEvent(id);
+    const event = await this.eventsService.getEvent(id);
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
+    return event;
   }
 
   @UsePipes()
   @Post()
+  @UseGuards(AuthGuardJwt)
+  @UseInterceptors(ClassSerializerInterceptor)
   async create(
     @Body(new ValidationPipe({ groups: ['create'] })) input: CreateEventDto,
+    @CurrentUser() user: User,
   ) {
-    return await this.repository.save({
-      ...input,
-      when: new Date(input.when),
-    });
+    return await this.eventsService.createEvent(input, user);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuardJwt)
+  @UseInterceptors(ClassSerializerInterceptor)
   async update(
     @Param('id') id,
     @Body(new ValidationPipe({ groups: ['update'] })) input: UpdateEventDto,
+    @CurrentUser() user: User,
   ) {
-    const eventToPatch = await this.repository.findOne(id);
+    const eventToPatch = await this.eventsService.getEvent(id);
 
-    return await this.repository.save({
-      ...eventToPatch,
-      ...input,
-      when: input.when ? new Date(input.when) : eventToPatch.when,
-    });
+    if (!eventToPatch) {
+      throw new NotFoundException();
+    }
+
+    if (eventToPatch.organizerId !== user.id) {
+      throw new ForbiddenException(null, `You can't do this!`);
+    }
+
+    return await this.eventsService.updateEvent(eventToPatch, input);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuardJwt)
   @HttpCode(204)
-  async remove(@Param('id') id) {
-    const eventToDelete = await this.repository.findOne(id);
+  async remove(@Param('id') id, @CurrentUser() user: User) {
+    const eventToDelete = await this.eventsService.getEvent(id);
 
-    await this.repository.remove(eventToDelete);
+    if (!eventToDelete) {
+      throw new NotFoundException();
+    }
+
+    if (eventToDelete.organizerId !== user.id) {
+      throw new ForbiddenException(null, `You can't delete this event!`);
+    }
+
+    await this.eventsService.deleteEvent(id);
   }
 }
