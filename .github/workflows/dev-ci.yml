@@ -1,9 +1,9 @@
 name: Dev Deployment
 
 on:
-  workflow_dispatch:
   push:
     branches: [ "develop" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,6 +16,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        path: dev
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
