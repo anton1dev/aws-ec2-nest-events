@@ -8,19 +8,10 @@ services:
   environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: nest-events
-      MYSQL_USER: root
       MYSQL_PASSWORD: example
   ports:
       - "3306:3306"
-
-  postgres:
-    image: postgres:13.1
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-      - 5432:5432
-
+      
   adminer:
     image: adminer
     restart: always
