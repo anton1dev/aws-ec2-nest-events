@@ -11,6 +11,8 @@ async function bootstrap() {
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   
+  console.log(process.env.DB_PASSWORD);
+  
   await app.listen(80);
 }
 
