@@ -10,8 +10,8 @@ services:
       MYSQL_DATABASE: nest-events
       MYSQL_PASSWORD: example
   ports:
-      - "3306:3306"
-      
+      - 3306:3306
+
   adminer:
     image: adminer
     restart: always
