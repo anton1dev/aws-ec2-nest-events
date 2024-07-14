@@ -24,6 +24,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: npm
     - run: npm ci
-    - run: docker compose up -d
+    - name: Docker Compose up
+      run: docker-compose up -d
+      env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_DATABASE: ${{ secrets.DB_DATABASE }}
     - run: npm run build --if-present
     - run: pm2 restart ./dist/src/main.js
