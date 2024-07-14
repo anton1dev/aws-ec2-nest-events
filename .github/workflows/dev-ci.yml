@@ -24,6 +24,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: npm
     - run: npm ci
+    - name: Log Environment Variables
+      run: env
     - name: Docker Compose up
       run: docker compose up -d
       env:
