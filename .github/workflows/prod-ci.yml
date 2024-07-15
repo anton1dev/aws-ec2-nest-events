@@ -49,6 +49,7 @@ jobs:
         envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
         envkey_DB_PASSWORD: ${{vars.DB_PASSWORD}}
         envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        envkey_APP_PORT: ${{ vars.APP_PORT }}
         file_name: .env
         fail_on_empty: false
         sort_keys: false

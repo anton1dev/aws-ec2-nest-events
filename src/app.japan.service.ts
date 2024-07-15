@@ -10,6 +10,6 @@ export class AppJapanService {
   ) {}
 
   getHello(): string {
-    return `Hello from AWS! Your port is ${process.env.DB_PORT}`;
+    return `Hello from AWS! Your port is ${process.env.APP_PORT}`;
   }
 }
