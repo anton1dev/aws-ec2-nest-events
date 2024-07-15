@@ -15,7 +15,7 @@ export default registerAs(
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'example123',
+    password: 'example',
     database: 'nest-events',
     entities: [Event, Attendee, Subject, Teacher, User, Profile, Course],
     synchronize: true,
