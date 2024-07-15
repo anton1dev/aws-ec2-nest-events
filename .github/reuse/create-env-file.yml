@@ -3,33 +3,29 @@ name: Make Dev Envfile
 on:
   workflow_call:
     inputs:
-      secrets:
+      environment:
         required: true
-        type: map
-      vars:
-        required: true
-        type: map
+        type: string
 
 jobs:
   make-envfile:
-    runs-on: [self-hosted, dev]
+    runs-on: [self-hosted, ${{ inputs.enviroment }}]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: dev
+          path: ${{ inputs.enviroment }}
       - name: Make dev envfile
         uses: SpicyPizza/create-envfile@v2.0.3
         with:
-          envs: |
-            DB_HOST=${{ inputs.secrets.DB_HOST }}
-            DB_PORT=${{ inputs.vars.DB_PORT }}
-            DB_USER=${{ inputs.vars.DB_USER }}
-            DB_NAME=${{ inputs.vars.DB_NAME }}
-            NODE_ENV=dev
-            DB_DROP_SCHEMA=${{ inputs.secrets.DB_DROP_SCHEMA }}
-            DB_PASSWORD=${{ inputs.vars.DB_PASSWORD }}
-            AUTH_SECRET=${{ inputs.secrets.AUTH_SECRET }}
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_PORT: ${{ vars.DB_PORT }}
+          envkey_DB_USER: ${{ vars.DB_USER }}
+          envkey_DB_NAME: ${{ vars.DB_NAME }}
+          envkey_NODE_ENV: dev
+          envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
+          envkey_DB_PASSWORD: ${{vars.DB_PASSWORD}}
+          envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           file_name: .env
           fail_on_empty: false
           sort_keys: false
