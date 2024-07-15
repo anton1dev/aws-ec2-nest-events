@@ -33,13 +33,13 @@ jobs:
     - name: Docker Compose up
       run: docker compose up -d
       env:
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ vars.DB_PORT }}
-        DB_USER: ${{ vars.DB_USER }}
-        DB_PASSWORD: ${{ vars.DB_PASSWORD }}
-        DB_NAME: ${{ vars.DB_NAME }}
-        DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
-        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        DB_HOST: localhost
+        DB_PORT: 3306
+        DB_USER: root
+        DB_PASSWORD: example123
+        DB_NAME: nest-events
+        DB_DROP_SCHEMA: 0
+        AUTH_SECRET: secret123
 
     - run: npm run build --if-present
     - name: Restart PM2
