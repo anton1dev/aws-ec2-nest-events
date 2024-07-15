@@ -8,9 +8,11 @@ on:
 jobs:
   build:
     runs-on: [self-hosted, dev]
+    environment: dev
     defaults:
       run: 
         working-directory: ./dev/
+
 
     strategy:
       matrix:
