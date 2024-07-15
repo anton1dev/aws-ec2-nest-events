@@ -30,7 +30,7 @@ jobs:
     - run: npm ci
     
     - name: Make dev envfile
-      uses: SpicyPizza/create-envfile@v2.0
+      uses: SpicyPizza/create-envfile@v2.0.3
       with:
         envkey_DB_HOST: localhost
         envkey_DB_PORT: 3306
@@ -43,6 +43,7 @@ jobs:
         file_name: .env
         fail_on_empty: false
         sort_keys: false
+        directory: ./dev
   
     - name: Docker Compose up
       run: docker compose up -d
