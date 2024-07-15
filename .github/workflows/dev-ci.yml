@@ -32,14 +32,14 @@ jobs:
     - name: Make dev envfile
       uses: SpicyPizza/create-envfile@v2.0.3
       with:
-        envkey_DB_HOST: localhost
-        envkey_DB_PORT: 3306
-        envkey_DB_USER: root
-        envkey_DB_NAME: nest-events
+        envkey_DB_HOST: ${{ secrets.DB_HOST }}
+        envkey_DB_PORT: ${{ vars.DB_PORT }}
+        envkey_DB_USER: ${{ vars.DB_USER }}
+        envkey_DB_NAME: ${{ vars.DB_NAME }}
         envkey_NODE_ENV: dev
-        envkey_DB_DROP_SCHEMA: 0
-        envkey_DB_PASSWORD: example
-        envkey_AUTH_SECRET: secret123
+        envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
+        envkey_DB_PASSWORD: ${{vars.DB_PASSWORD}}
+        envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
         file_name: .env
         fail_on_empty: false
         sort_keys: false
