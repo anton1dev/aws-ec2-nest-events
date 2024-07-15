@@ -1,17 +1,15 @@
-name: Dev deploy
+name: Prod deploy
 
 on:
-  push:
-    branches: [ "develop" ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: [self-hosted, dev]
-    environment: dev
+    runs-on: [self-hosted, prod]
+    environment: prod
     defaults:
       run: 
-        working-directory: ./dev/
+        working-directory: ./prod/
 
 
     strategy:
@@ -22,13 +20,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        path: dev
+        path: prod
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: npm
-        cache-dependency-path: './dev/package-lock.json'
+        cache-dependency-path: './prod/package-lock.json'
       
     - name: Cache Node.js modules
       uses: actions/cache@v3
@@ -41,9 +39,20 @@ jobs:
     - run: npm ci
     
     - name: Make dev envfile
-    - uses: ./.github/workflows/reuse/create-env-file.yml
+      uses: SpicyPizza/create-envfile@v2.0.3
       with:
-        environment: dev 
+        envkey_DB_HOST: ${{ secrets.DB_HOST }}
+        envkey_DB_PORT: ${{ vars.DB_PORT }}
+        envkey_DB_USER: ${{ vars.DB_USER }}
+        envkey_DB_NAME: ${{ vars.DB_NAME }}
+        envkey_NODE_ENV: dev
+        envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
+        envkey_DB_PASSWORD: ${{vars.DB_PASSWORD}}
+        envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        file_name: .env
+        fail_on_empty: false
+        sort_keys: false
+        directory: ./prod 
   
     - name: Docker Compose up
       run: docker compose up -d
