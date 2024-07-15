@@ -29,6 +29,15 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: npm
         cache-dependency-path: './dev/package-lock.json'
+      
+    - name: Cache Node.js modules
+      uses: actions/cache@v3
+      with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('dev/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+  
     - run: npm ci
     
     - name: Make dev envfile
