@@ -35,7 +35,7 @@ jobs:
         envkey_DB_HOST: ${{ secrets.DB_HOST }}
         envkey_DB_PORT: ${{ vars.DB_PORT }}
         envkey_DB_USER: ${{ vars.DB_USER }}
-        envkey_DB_NAME: ${{ vars.DB_NAME }}
+        envkey_DB_NAME123: ${{ vars.DB_NAME }}
         envkey_NODE_ENV: dev
         envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
         envkey_DB_PASSWORD: ${{vars.DB_PASSWORD}}
