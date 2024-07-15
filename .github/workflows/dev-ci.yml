@@ -51,4 +51,4 @@ jobs:
         DB_PASSWORD: ${{ vars.DB_PASSWORD }}
         DB_NAME: ${{ vars.DB_NAME }}
         DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
-        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        AUTH_SECRET: 'secret123'
