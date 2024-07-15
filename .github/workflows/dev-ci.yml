@@ -30,19 +30,20 @@ jobs:
     - run: npm ci
     
     - name: Make dev envfile
-      uses: SpicyPizza/create-envfile@v2.0.3
+      uses: SpicyPizza/create-envfile@v2.0
       with:
-        envkey_DB_HOST: 'localhost'
+        envkey_DB_HOST: localhost
         envkey_DB_PORT: 3306
-        envkey_DB_USER: 'root'
-        envkey_DB_NAME: 'nest-events'
+        envkey_DB_USER: root
+        envkey_DB_NAME: nest-events
         envkey_NODE_ENV: dev
         envkey_DB_DROP_SCHEMA: 0
-        envkey_DB_PASSWORD: 'example'
-        envkey_AUTH_SECRET: 'secret123'
+        envkey_DB_PASSWORD: example
+        envkey_AUTH_SECRET: secret123
         file_name: .env
         fail_on_empty: false
         sort_keys: false
+  
     - name: Docker Compose up
       run: docker compose up -d
       env:
