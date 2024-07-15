@@ -17,13 +17,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        path: dev
+        path: ./dev
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: npm
-        cache-dependency-path: './dev/package-lock.json'
     - run: npm ci
     - name: Log Environment Variables
       run: env
