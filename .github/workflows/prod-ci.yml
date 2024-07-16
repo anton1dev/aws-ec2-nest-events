@@ -57,23 +57,7 @@ jobs:
   
     - name: Docker Compose up
       run: docker compose up -d
-      env:
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ vars.DB_PORT }}
-        DB_USER: ${{ vars.DB_USER }}
-        DB_PASSWORD: ${{vars.DB_PASSWORD}}
-        DB_NAME: ${{ vars.DB_NAME }}
-        DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
-        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     
     - run: npm run build --if-present
     - name: Restart PM2
       run: pm2 restart ./dist/main.js --update-env
-      env:
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ vars.DB_PORT }}
-        DB_USER: ${{ vars.DB_USER }}
-        DB_PASSWORD: ${{ vars.DB_PASSWORD }}
-        DB_NAME: ${{ vars.DB_NAME }}
-        DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
-        AUTH_SECRET: 'secret123'
