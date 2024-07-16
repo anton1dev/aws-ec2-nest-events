@@ -1,8 +1,8 @@
 name: 'Create Env File'
-description: 'Creates a .env file for dev or prod'
+description: 'Creates a .env file for development'
 inputs:
   environment:
-    description: 'Environment, which will be used. Optionally: dev or prod'
+    description: 'The environment to use'
     required: true
     type: string
 runs:
@@ -11,18 +11,27 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Make dev envfile
-      uses: SpicyPizza/create-envfile@v2.0.3
-      with:
-        envkey_DB_HOST: ${{ secrets.DB_HOST }}
-        envkey_DB_PORT: ${{ vars.DB_PORT }}
-        envkey_DB_USER: ${{ vars.DB_USER }}
-        envkey_DB_NAME: ${{ vars.DB_NAME }}
-        envkey_NODE_ENV: dev
-        envkey_DB_DROP_SCHEMA: ${{ secrets.DB_DROP_SCHEMA }}
-        envkey_DB_PASSWORD: ${{ vars.DB_PASSWORD }}
-        envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-        file_name: .env
-        fail_on_empty: false
-        sort_keys: false
-        directory: ./${{ inputs.environment }}
+    - name: Create .env file
+      run: |
+        echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+        echo "DB_PORT=${{ vars.DB_PORT }}" >> $GITHUB_ENV
+        echo "DB_USER=${{ vars.DB_USER }}" >> $GITHUB_ENV
+        echo "DB_NAME=${{ vars.DB_NAME }}" >> $GITHUB_ENV
+        echo "NODE_ENV=dev" >> $GITHUB_ENV
+        echo "DB_DROP_SCHEMA=${{ secrets.DB_DROP_SCHEMA }}" >> $GITHUB_ENV
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+        echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Write .env file
+      run: |
+        echo "DB_HOST=${DB_HOST}" >> .env
+        echo "DB_PORT=${DB_PORT}" >> .env
+        echo "DB_USER=${DB_USER}" >> .env
+        echo "DB_NAME=${DB_NAME}" >> .env
+        echo "NODE_ENV=${NODE_ENV}" >> .env
+        echo "DB_DROP_SCHEMA=${DB_DROP_SCHEMA}" >> .env
+        echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+        echo "AUTH_SECRET=${AUTH_SECRET}" >> .env
+      shell: bash
+      working-directory: ./${{ inputs.environment }}
