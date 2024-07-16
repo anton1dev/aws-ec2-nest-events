@@ -11,10 +11,6 @@ jobs:
   make-envfile:
     runs-on: [self-hosted, ${{ inputs.enviroment }}]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: ${{ inputs.enviroment }}
       - name: Make dev envfile
         uses: SpicyPizza/create-envfile@v2.0.3
         with:
@@ -29,4 +25,4 @@ jobs:
           file_name: .env
           fail_on_empty: false
           sort_keys: false
-          directory: ./dev
+          directory: ./${{ environment }}
