@@ -42,7 +42,7 @@ jobs:
     - run: npm ci
     
     - name: Call Make dev envfile
-      uses: ./.github/workflows/create-env.yml
+      uses: ./.github/reusable/create-env
       with:
         environment: dev
   
